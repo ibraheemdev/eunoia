@@ -73,6 +73,58 @@ where
     }
 }
 
+struct Token {
+    kind: TokenKind,
+    lexeme: String,
+    literal: String,
+    line: usize,
+}
+
+impl Token {
+    fn new(
+        kind: TokenKind,
+        lexeme: impl Into<String>,
+        literal: impl Into<String>,
+        line: usize,
+    ) -> Self {
+        Self {
+            kind,
+            line,
+            lexeme: lexeme.into(),
+            literal: literal.into(),
+        }
+    }
+}
+
+impl ToString for Token {
+    fn to_string(&self) -> String {
+        format!("{} {} {}", self.kind.as_ref(), self.lexeme, self.literal)
+    }
+}
+
+#[rustfmt::skip]
+#[derive(strum_macros::AsRefStr)]
+enum TokenKind {
+    // Single-character tokens.
+    LeftParen, RightParen, LeftBrace,
+    RightBrace, Comma, Dot, Minus,
+    Plus, Semicolon, Slash, Star,
+
+    // One or two character tokens.
+    Bang, BangEqual, Equal, EqualEqual,
+    Greater, GreaterEqual, Less, LessEqual,
+
+    // Literals.
+    Identifier, String, Number,
+
+    // Keywords.
+    And, Class, Else, False, Fun,
+    For, If, Nil, Or, Print, Return,
+    Super, This, True, Var, While,
+
+    Eof
+}
+
 trait ErrorReporter {
     fn report(line: usize, message: &str);
 }
